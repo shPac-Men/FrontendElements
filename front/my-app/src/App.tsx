@@ -1,22 +1,18 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AlbumPage } from "./pages/AlbumPage/AlbumPage";
-import { AlbumsPage } from "./pages/AlbumsPage/AlbumsPage";
-import ITunesPage from "./pages/ITunesPage/ITunesPage";
+import { ChemicalPage } from "./pages/ChemicalPage/ChemicalPage";
+import { ChemicalDetailPage } from "./pages/ChemicalDetailPage/ChemicalDetailPage";
+import { MixingPage } from "./pages/MixingPage/MixingPage";
 import { HomePage } from "./pages/HomePage/HomePage";
-import Navigation from "./components/Navigation/Navigation"; // импорт навигации
 import { ROUTES } from "./Routes";
 
 function App() {
   return (
     <BrowserRouter>
-      {/* Добавляем навигацию */}
-      <Navigation />
-      
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/itunes" element={<ITunesPage />} />
-        <Route path={ROUTES.ALBUMS} element={<AlbumsPage />} />
-        <Route path={`${ROUTES.ALBUMS}/:id`} element={<AlbumPage />} />
+        <Route path={ROUTES.HOME} element={<HomePage />} />
+        <Route path={ROUTES.CHEMICALS} element={<ChemicalPage />} />
+        <Route path="/element/:id" element={<ChemicalDetailPage />} />
+        <Route path="/mixing" element={<MixingPage />} />
       </Routes>
     </BrowserRouter>
   );

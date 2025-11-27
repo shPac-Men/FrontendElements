@@ -1,145 +1,191 @@
-// src/pages/MixingPage/MixingPage.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { getMixingCart, removeFromMixing } from '../../modules/chemistryApi';
 import './MixingPage.css';
 
-const LOGO = 'http://localhost:9000/staticimages/image.svg';
-const DEFAULT_IMAGE = 'https://via.placeholder.com/120?text=No+Image';
-
-interface CartItem {
+interface MixingItem {
   id: number;
-  name: string;
-  ph: number;
-  concentration: number;
-  image: string;
+  element_id: number;
   volume: number;
-}
-
-interface MixingPageProps {
-  cartItems?: CartItem[];
-}
-
-export const MixingPage: FC<MixingPageProps> = ({ cartItems = [] }) => {
-  const navigate = useNavigate();
-  const [addedWater, setAddedWater] = useState(100);
-  const [calculatedPH, setCalculatedPH] = useState<number | null>(null);
-  const [items, setItems] = useState(cartItems);
-  const [isCalculating, setIsCalculating] = useState(false);
-
-  const handleAddWater = () => {
-    // Расчет pH
-    const avgPH = items.length > 0 
-      ? items.reduce((sum, item) => sum + item.ph, 0) / items.length 
-      : 7;
-    setCalculatedPH(avgPH);
+  element: {
+    id: number;
+    name: string;
+    description: string;
+    ph: number;
+    concentration: number;
+    image: string;
   };
+}
 
-  const handleRemoveItem = (itemId: number) => {
-    if (confirm('Удалить этот элемент из корзины?')) {
-      setItems(items.filter((item) => item.id !== itemId));
+export const MixingPage: FC = () => {
+  const [cartItems, setCartItems] = useState<MixingItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [addedWater, setAddedWater] = useState(100);
+  const [result, setResult] = useState('');
+
+  const loadCart = async () => {
+    setLoading(true);
+    try {
+      const items = await getMixingCart();
+      setCartItems(items);
+    } catch (error) {
+      console.error('Error loading cart:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleCalculate = () => {
-    setIsCalculating(true);
-    setTimeout(() => {
-      // Имитация отправки запроса
-      alert(`Рассчитано с добавленной водой: ${addedWater} мл`);
-      setIsCalculating(false);
-    }, 1000);
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  const handleAddWater = () => {
+    alert(`Добавленная вода применена: ${addedWater} мл`);
+    setResult('');
   };
 
-  const handleVolumeChange = (itemId: number, newVolume: number) => {
-    setItems(
-      items.map((item) =>
-        item.id === itemId ? { ...item, volume: newVolume } : item
-      )
-    );
+  const handleCalculate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Показываем анимацию загрузки
+    const btn = document.getElementById('createRequestBtn') as HTMLButtonElement;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Расчет...';
+    }
+
+    // Имитация расчета
+    setTimeout(() => {
+      const calculatedPH = (7.0).toFixed(1); // Пример расчета
+      setResult(`pH: ${calculatedPH} с добавленной водой`);
+      
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Рассчитать';
+      }
+    }, 2000);
+  };
+
+  const handleRemoveFromMixing = async (element_id: number) => {
+    if (!confirm('Удалить этот элемент из корзины?')) {
+      return;
+    }
+
+    try {
+      const success = await removeFromMixing(element_id);
+      if (success) {
+        // Обновляем корзину
+        loadCart();
+        alert('Элемент удален из корзины');
+      } else {
+        alert('Ошибка при удалении из корзины');
+      }
+    } catch (error) {
+      console.error('Error removing from mixing:', error);
+      alert('Ошибка при удалении из корзины');
+    }
+  };
+
+  const handleVolumeChange = (id: number, newVolume: number) => {
+    // TODO: реализовать обновление объема через API
+    console.log(`Change volume for item ${id} to ${newVolume}ml`);
   };
 
   return (
     <div className="mixing-page">
       <header>
-        <a
-          href="#"
-          className="home-link"
-          onClick={() => navigate('/elements')}
-        >
-          <img src={LOGO} alt="На главную" />
-        </a>
+        <Link to="/chemicals" className="home-link">
+          <img src="/staticimages/image.svg" alt="На главную" />
+        </Link>
       </header>
 
-      {/* Секция температуры */}
+      {/* Поле для ввода добавленной воды с кнопкой заявки */}
       <div className="temperature-section">
-        <form className="temperature-form" onSubmit={(e) => e.preventDefault()}>
+        <form className="temperature-form" id="temperatureForm">
           <div className="input-group">
             <label htmlFor="added_water">Добавленная вода (мл):</label>
-            <input
-              type="number"
-              id="added_water"
-              placeholder="100"
-              step="1"
-              min="0"
+            <input 
+              type="number" 
+              id="added_water" 
+              name="added_water" 
+              placeholder="100" 
+              step="1" 
+              min="0" 
               value={addedWater}
-              onChange={(e) => setAddedWater(Number(e.target.value))}
+              onChange={(e) => setAddedWater(parseInt(e.target.value) || 100)}
             />
-            <button type="button" className="btn-temperature" onClick={handleAddWater}>
+            <button 
+              type="button" 
+              className="btn-temperature"
+              onClick={handleAddWater}
+            >
               Добавить
             </button>
           </div>
         </form>
 
-        {/* Результат */}
+        {/* Результат между "Добавить" и "Рассчитать" */}
         <div className="result-display">
-          <input
-            type="text"
-            placeholder="Результат"
+          <input 
+            type="text" 
+            placeholder="Результат" 
             readOnly
-            value={
-              calculatedPH
-                ? `pH: ${calculatedPH.toFixed(2)} с добавленной водой`
-                : ''
-            }
+            value={result}
             id="resultField"
           />
         </div>
 
         {/* Кнопка расчета */}
-        <button
-          type="button"
-          className="btn calculate-btn"
-          onClick={handleCalculate}
-          disabled={items.length === 0 || isCalculating}
-        >
-          {isCalculating ? 'Расчет...' : 'Рассчитать'}
-        </button>
+        <form onSubmit={handleCalculate} id="requestForm">
+          <input 
+            type="hidden" 
+            name="added_water" 
+            id="hiddenAddedWater" 
+            value={addedWater} 
+          />
+          <button 
+            type="submit" 
+            className="btn calculate-btn" 
+            id="createRequestBtn" 
+            disabled={cartItems.length === 0}
+          >
+            Рассчитать
+          </button>
+        </form>
       </div>
 
-      {/* Main content */}
       <main>
         <div className="cards-container">
-          {items.length > 0 ? (
-            items.map((item) => (
+          {loading ? (
+            <div className="loading">Загрузка корзины...</div>
+          ) : cartItems.length === 0 ? (
+            <div className="empty-cart">
+              <p>Корзина пуста</p>
+              <Link to="/chemicals" className="btn">Добавить элементы</Link>
+            </div>
+          ) : (
+            cartItems.map((item) => (
               <div key={item.id} className="card">
                 <div className="card-content">
                   <div className="card-column">
-                    <img
-                      src={item.image || DEFAULT_IMAGE}
-                      alt={item.name}
+                    <img 
+                      src={item.element.image} 
+                      alt={item.element.name} 
                       className="card-img"
                       onError={(e) => {
-                        e.currentTarget.src = DEFAULT_IMAGE;
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/staticimages/default_element.png';
                       }}
                     />
                   </div>
                   <div className="card-column">
-                    <h3>{item.name}</h3>
+                    <h3>{item.element.name}</h3>
                     <div className="info-item">
-                      <strong>pH:</strong> {item.ph}
+                      <strong>pH:</strong> {item.element.ph}
                     </div>
                     <div className="info-item">
-                      <strong>Концентрация:</strong> {item.concentration}
+                      <strong>Концентрация:</strong> {item.element.concentration}
                     </div>
                     <div className="info-item">
                       <strong>Температура:</strong> 25°C
@@ -147,24 +193,23 @@ export const MixingPage: FC<MixingPageProps> = ({ cartItems = [] }) => {
                   </div>
                   <div className="card-column">
                     <div className="mass-input">
-                      <label htmlFor={`mass-${item.id}`}>Объем (мл):</label>
-                      <input
-                        type="number"
-                        id={`mass-${item.id}`}
-                        className="mass-field"
-                        placeholder={String(item.volume)}
-                        step="0.1"
-                        min="0"
+                      <label htmlFor={`mass-${item.element.id}`}>Объем (мл):</label>
+                      <input 
+                        type="number" 
+                        id={`mass-${item.element.id}`} 
+                        className="mass-field" 
+                        placeholder={item.volume.toString()} 
+                        step="0.1" 
+                        min="0" 
                         value={item.volume}
-                        onChange={(e) =>
-                          handleVolumeChange(item.id, Number(e.target.value))
-                        }
+                        onChange={(e) => handleVolumeChange(item.element.id, parseFloat(e.target.value) || item.volume)}
                       />
                     </div>
-                    <button
-                      type="button"
+                    {/* Кнопка удаления из корзины */}
+                    <button 
+                      type="button" 
                       className="btn btn-remove"
-                      onClick={() => handleRemoveItem(item.id)}
+                      onClick={() => handleRemoveFromMixing(item.element.id)}
                     >
                       Удалить
                     </button>
@@ -172,13 +217,6 @@ export const MixingPage: FC<MixingPageProps> = ({ cartItems = [] }) => {
                 </div>
               </div>
             ))
-          ) : (
-            <div className="empty-cart">
-              <p>Корзина пуста</p>
-              <a href="#" onClick={() => navigate('/elements')} className="btn">
-                Добавить элементы
-              </a>
-            </div>
           )}
         </div>
       </main>

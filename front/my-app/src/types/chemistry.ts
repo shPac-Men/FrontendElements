@@ -7,13 +7,29 @@ export interface ChemicalElement {
   image: string;
 }
 
-export interface ChemicalsResponse {
+export interface ApiResponse<T> {
   success: boolean;
-  data: {
-    items: ChemicalElement[];
-    query?: string;
-    total: number;
-  };
+  data: T;
+  message?: string;
+}
+
+// Исправляем ChemicalsResponse - убираем success и data
+export interface ChemicalsResponse {
+  items: ChemicalElement[];
+  query?: string;
+  total: number;
+}
+
+export interface MixingItem {
+  id: number;
+  element_id: number;
+  volume: number;
+  element: ChemicalElement;
+}
+
+export interface MixingResponse {
+  items: MixingItem[];
+  total: number;
 }
 
 export interface Filters {

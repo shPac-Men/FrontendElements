@@ -1,33 +1,30 @@
-// src/pages/HomePage/HomePage.tsx
-import type { FC } from 'react';
-import { Link } from 'react-router-dom';
-import { ROUTES } from '../../Routes';
+import type { FC } from "react";
+import { Link } from "react-router-dom";
 import './HomePage.css';
 
 export const HomePage: FC = () => {
   return (
     <div className="home-page">
+      {/* Hero секция с картинкой */}
       <section className="hero">
-        <div className="hero-overlay" />
-        <div className="hero-content">
-          <h1>Chemistry Lab</h1>
-          <p>Расчет и планирование химических реакций</p>
-          <Link to={ROUTES.ELEMENTS} className="btn btn-primary btn-large">
-            Начать
-          </Link>
-        </div>
+        <header>
+          <h1>
+            <Link to="/">
+              <img src="http://localhost:9000/staticimages/image.svg" alt="home" />
+            </Link>
+          </h1>
+        </header>
       </section>
 
-      <section className="info">
-        <div className="info-content">
-          <h2>Добро пожаловать</h2>
-          <p>
-            Наша платформа предназначена для расчета и планирования химических
-            реакций. Выберите нужные вам реактивы и получите расчеты для вашего
-            эксперимента.
-          </p>
+      <main>
+        <div className="welcome-section">
+          <h2>Добро пожаловать в химическую лабораторию</h2>
+          <p>Исследуйте химические реактивы и создавайте смеси</p>
+          <Link to="/chemicals" className="btn btn-primary">
+            Перейти к реактивам
+          </Link>
         </div>
-      </section>
+      </main>
     </div>
   );
 };
