@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import type { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { getMixingCart, removeFromMixing } from '../../modules/chemistryApi';
+import { ROUTES } from '../../Routes';
 import './MixingPage.css';
+
 
 interface MixingItem {
   id: number;
@@ -18,11 +20,13 @@ interface MixingItem {
   };
 }
 
+
 export const MixingPage: FC = () => {
   const [cartItems, setCartItems] = useState<MixingItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [addedWater, setAddedWater] = useState(100);
   const [result, setResult] = useState('');
+
 
   const loadCart = async () => {
     setLoading(true);
@@ -36,28 +40,29 @@ export const MixingPage: FC = () => {
     }
   };
 
+
   useEffect(() => {
     loadCart();
   }, []);
+
 
   const handleAddWater = () => {
     alert(`Добавленная вода применена: ${addedWater} мл`);
     setResult('');
   };
 
+
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Показываем анимацию загрузки
     const btn = document.getElementById('createRequestBtn') as HTMLButtonElement;
     if (btn) {
       btn.disabled = true;
       btn.textContent = 'Расчет...';
     }
 
-    // Имитация расчета
     setTimeout(() => {
-      const calculatedPH = (7.0).toFixed(1); // Пример расчета
+      const calculatedPH = (7.0).toFixed(1);
       setResult(`pH: ${calculatedPH} с добавленной водой`);
       
       if (btn) {
@@ -67,6 +72,7 @@ export const MixingPage: FC = () => {
     }, 2000);
   };
 
+
   const handleRemoveFromMixing = async (element_id: number) => {
     if (!confirm('Удалить этот элемент из корзины?')) {
       return;
@@ -75,7 +81,6 @@ export const MixingPage: FC = () => {
     try {
       const success = await removeFromMixing(element_id);
       if (success) {
-        // Обновляем корзину
         loadCart();
         alert('Элемент удален из корзины');
       } else {
@@ -87,20 +92,20 @@ export const MixingPage: FC = () => {
     }
   };
 
+
   const handleVolumeChange = (id: number, newVolume: number) => {
-    // TODO: реализовать обновление объема через API
     console.log(`Change volume for item ${id} to ${newVolume}ml`);
   };
+
 
   return (
     <div className="mixing-page">
       <header>
-        <Link to="/chemicals" className="home-link">
+        <Link to={ROUTES.HOME} className="home-link">  {/* ← Измени */}
           <img src="/staticimages/image.svg" alt="На главную" />
         </Link>
       </header>
 
-      {/* Поле для ввода добавленной воды с кнопкой заявки */}
       <div className="temperature-section">
         <form className="temperature-form" id="temperatureForm">
           <div className="input-group">
@@ -125,7 +130,6 @@ export const MixingPage: FC = () => {
           </div>
         </form>
 
-        {/* Результат между "Добавить" и "Рассчитать" */}
         <div className="result-display">
           <input 
             type="text" 
@@ -136,7 +140,6 @@ export const MixingPage: FC = () => {
           />
         </div>
 
-        {/* Кнопка расчета */}
         <form onSubmit={handleCalculate} id="requestForm">
           <input 
             type="hidden" 
@@ -162,7 +165,7 @@ export const MixingPage: FC = () => {
           ) : cartItems.length === 0 ? (
             <div className="empty-cart">
               <p>Корзина пуста</p>
-              <Link to="/chemicals" className="btn">Добавить элементы</Link>
+              <Link to={ROUTES.CHEMICALS} className="btn">Добавить элементы</Link>  {/* ← Измени */}
             </div>
           ) : (
             cartItems.map((item) => (
@@ -205,7 +208,6 @@ export const MixingPage: FC = () => {
                         onChange={(e) => handleVolumeChange(item.element.id, parseFloat(e.target.value) || item.volume)}
                       />
                     </div>
-                    {/* Кнопка удаления из корзины */}
                     <button 
                       type="button" 
                       className="btn btn-remove"

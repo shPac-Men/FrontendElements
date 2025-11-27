@@ -21,7 +21,7 @@ export const HomePage: FC = () => {
         <div className="welcome-section">
           <h2>Добро пожаловать в химическую лабораторию</h2>
           <p>Исследуйте химические реактивы и создавайте смеси</p>
-          <Link to={ROUTES.ELEMENTS} className="btn btn-primary">
+          <Link to={ROUTES.CHEMICALS} className="btn btn-primary">
             Перейти к реактивам
           </Link>
         </div>

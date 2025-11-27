@@ -5,6 +5,9 @@ import type { ChemicalElement } from '../../types/chemistry';
 import { getChemicals, addToMixing, getCartCount } from '../../modules/chemistryApi';
 import './ChemicalPage.css';
 import { ROUTES } from '../../Routes';
+import reactSvg from '../../assets/react.svg';
+
+const DEFAULT_IMAGE = reactSvg;
 
 export const ChemicalPage: FC = () => {
   const [chemicals, setChemicals] = useState<ChemicalElement[]>([]);
@@ -71,7 +74,7 @@ export const ChemicalPage: FC = () => {
       </section>
 
       <div className="search-section">
-        <Link to={ROUTES.MIXING} className="cart-link">  {/* ← Измени */}
+        <Link to={ROUTES.MIXING} className="cart-link">
           <img src="/staticimages/breaker.svg" alt="cart" />
           {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
         </Link>
@@ -98,19 +101,19 @@ export const ChemicalPage: FC = () => {
             chemicals.map((chemical) => (
               <div key={chemical.id} className="card">
                 <img 
-                  src={chemical.image} 
+                  src={chemical.image || DEFAULT_IMAGE} 
                   alt={chemical.name} 
                   className="card-img"
                   onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/staticimages/default_element.png';
+                    e.currentTarget.src = DEFAULT_IMAGE;
                   }}
                 />
                 <h3>{chemical.name}</h3>
                 <p><strong>Концентрация:</strong> {chemical.concentration}</p>
                 <p><strong>pH:</strong> {chemical.ph}</p>
+                {/* ИСПРАВЛЕННАЯ СТРОКА: используем ELEMENT_DETAIL вместо CHEMICAL_DETAIL */}
                 <Link 
-                  to={ROUTES.CHEMICAL_DETAIL.replace(':id', chemical.id.toString())}
+                  to={ROUTES.ELEMENT_DETAIL.replace(':id', chemical.id.toString())}
                   className="btn"
                 >
                   Подробнее

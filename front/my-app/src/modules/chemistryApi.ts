@@ -18,7 +18,7 @@ export const CHEMICALS_MOCK: ChemicalElement[] = [
     description: "Hydrochloric acid",
     ph: 1.0,
     concentration: 0.5,
-    image: "/staticimages/HCl.jpg"
+    image: ""
   },
   {
     id: 3,

@@ -1,5 +1,5 @@
 /* Сброс и базовые стили */
-* {
+.mixing-page * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -16,7 +16,7 @@
 }
 
 /* Header */
-header {
+.mixing-page header {
     display: flex;
     align-items: center;
     padding: 20px 30px;
@@ -25,23 +25,23 @@ header {
     height: 80px;
 }
 
-.home-link {
+.mixing-page .home-link {
     flex-shrink: 0;
 }
 
-.home-link img {
+.mixing-page .home-link img {
     width: 50px;
     height: 50px;
     display: block;
     transition: transform 0.2s;
 }
 
-.home-link:hover img {
+.mixing-page .home-link:hover img {
     transform: scale(1.05);
 }
 
 /* Секция температуры */
-.temperature-section {
+.mixing-page .temperature-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -53,13 +53,13 @@ header {
 }
 
 /* Форма температуры */
-.temperature-form {
+.mixing-page .temperature-form {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.input-group {
+.mixing-page .input-group {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -71,14 +71,14 @@ header {
     backdrop-filter: blur(4px);
 }
 
-.input-group label {
+.mixing-page .input-group label {
     font-weight: bold;
     color: #fff;
     font-size: 16px;
     text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 
-.input-group input[type="number"] {
+.mixing-page .input-group input[type="number"] {
     padding: 10px 14px;
     border: 2px solid rgba(255,255,255,0.4);
     border-radius: 6px;
@@ -89,12 +89,12 @@ header {
     color: #000;
 }
 
-.input-group input[type="number"]:focus {
+.mixing-page .input-group input[type="number"]:focus {
     border-color: #00d4ff;
     box-shadow: 0 0 10px rgba(0,212,255,0.5);
 }
 
-.btn-temperature {
+.mixing-page .btn-temperature {
     padding: 10px 22px;
     background: #fff;
     color: #000;
@@ -107,21 +107,21 @@ header {
     box-shadow: 0 3px 8px rgba(0,0,0,0.2);
 }
 
-.btn-temperature:hover {
+.mixing-page .btn-temperature:hover {
     background: #f1f1f1;
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(0,0,0,0.3);
 }
 
 /* Результат по центру */
-.result-display {
+.mixing-page .result-display {
     display: flex;
     align-items: center;
     justify-content: center;
     flex: 1;
 }
 
-.result-display input {
+.mixing-page .result-display input {
     padding: 12px 16px;
     border: 2px solid #ddd;
     border-radius: 6px;
@@ -133,14 +133,14 @@ header {
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.result-display input:focus {
+.mixing-page .result-display input:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
 }
 
 /* Кнопка расчета */
-.calculate-btn {
+.mixing-page .calculate-btn {
     padding: 12px 24px;
     background: #fff;
     color: #000;
@@ -155,24 +155,24 @@ header {
     white-space: nowrap;
 }
 
-.calculate-btn:hover:not(:disabled) {
+.mixing-page .calculate-btn:hover:not(:disabled) {
     background: #f1f1f1;
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(0,0,0,0.3);
 }
 
-.calculate-btn:disabled {
+.mixing-page .calculate-btn:disabled {
     background: #cccccc;
     cursor: not-allowed;
     opacity: 0.6;
 }
 
 /* Main content */
-main {
+.mixing-page main {
     padding: 30px 20px;
 }
 
-.cards-container {
+.mixing-page .cards-container {
     display: flex;
     flex-direction: column;
     gap: 25px;
@@ -182,7 +182,7 @@ main {
 }
 
 /* Карточки */
-.card {
+.mixing-page .card {
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(221, 221, 221, 0.8);
     border-radius: 12px;
@@ -192,48 +192,48 @@ main {
     backdrop-filter: blur(10px);
 }
 
-.card:hover {
+.mixing-page .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     background: rgba(255, 255, 255, 1);
 }
 
-.card-content {
+.mixing-page .card-content {
     display: flex;
     gap: 25px;
     align-items: flex-start;
 }
 
-.card-column {
+.mixing-page .card-column {
     display: flex;
     flex-direction: column;
     flex: 1;
 }
 
-.card-column:first-child {
+.mixing-page .card-column:first-child {
     flex: 0 0 150px;
     align-items: center;
     text-align: center;
 }
 
-.card-column:nth-child(2) {
+.mixing-page .card-column:nth-child(2) {
     flex: 1;
     justify-content: flex-start;
 }
 
-.card-column:last-child {
+.mixing-page .card-column:last-child {
     flex: 0 0 180px;
     align-items: flex-start;
 }
 
-.card-img {
+.mixing-page .card-img {
     width: 120px;
     height: 120px;
     object-fit: contain;
     border-radius: 6px;
 }
 
-.card h3 {
+.mixing-page .card h3 {
     font-size: 18px;
     margin: 0 0 12px 0;
     font-weight: 600;
@@ -241,26 +241,26 @@ main {
     line-height: 1.3;
 }
 
-.info-item {
+.mixing-page .info-item {
     margin-bottom: 8px;
     font-size: 14px;
     line-height: 1.4;
     color: #555;
 }
 
-.info-item strong {
+.mixing-page .info-item strong {
     color: #333;
     display: inline-block;
     min-width: 110px;
     font-weight: 600;
 }
 
-.mass-input {
+.mixing-page .mass-input {
     margin-bottom: 15px;
     width: 100%;
 }
 
-.mass-input label {
+.mixing-page .mass-input label {
     display: block;
     margin-bottom: 6px;
     font-size: 14px;
@@ -268,7 +268,7 @@ main {
     color: #333;
 }
 
-.mass-field {
+.mixing-page .mass-field {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid #ddd;
@@ -278,13 +278,13 @@ main {
     transition: all 0.3s;
 }
 
-.mass-field:focus {
+.mixing-page .mass-field:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }
 
-.btn-remove {
+.mixing-page .btn-remove {
     background: #dc3545;
     color: white;
     border: none;
@@ -298,18 +298,18 @@ main {
     box-shadow: 0 2px 6px rgba(220,53,69,0.3);
 }
 
-.btn-remove:hover {
+.mixing-page .btn-remove:hover {
     background: #c82333;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(220,53,69,0.4);
 }
 
-.remove-form {
+.mixing-page .remove-form {
     margin-top: 10px;
     width: 100%;
 }
 
-.empty-cart {
+.mixing-page .empty-cart {
     text-align: center;
     padding: 60px 40px;
     color: #666;
@@ -318,13 +318,13 @@ main {
     backdrop-filter: blur(10px);
 }
 
-.empty-cart p {
+.mixing-page .empty-cart p {
     font-size: 18px;
     margin-bottom: 20px;
     color: #333;
 }
 
-.empty-cart .btn {
+.mixing-page .empty-cart .btn {
     display: inline-block;
     padding: 12px 24px;
     background: #007bff;
@@ -334,16 +334,19 @@ main {
     transition: all 0.3s;
 }
 
-.empty-cart .btn:hover {
+.mixing-page .empty-cart .btn:hover {
     background: #0056b3;
     transform: translateY(-2px);
 }
 
-.loading {
+.mixing-page .loading {
     text-align: center;
     padding: 40px;
-    font-size: 18px;
     color: #666;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    font-size: 18px;
 }
 
 @keyframes fadeIn {
@@ -359,98 +362,98 @@ main {
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .temperature-section {
+    .mixing-page .temperature-section {
         flex-direction: column;
         gap: 15px;
         padding: 20px;
     }
     
-    .result-display {
+    .mixing-page .result-display {
         order: 2;
         width: 100%;
     }
     
-    .result-display input {
+    .mixing-page .result-display input {
         min-width: auto;
         width: 100%;
     }
     
-    .calculate-btn {
+    .mixing-page .calculate-btn {
         width: 100%;
         order: 3;
     }
     
-    .temperature-form {
+    .mixing-page .temperature-form {
         order: 1;
         width: 100%;
         justify-content: center;
     }
     
-    header {
+    .mixing-page header {
         height: auto;
         padding: 15px;
     }
     
-    .card-content {
+    .mixing-page .card-content {
         flex-direction: column;
         gap: 15px;
         text-align: center;
     }
     
-    .card-column:first-child,
-    .card-column:last-child {
+    .mixing-page .card-column:first-child,
+    .mixing-page .card-column:last-child {
         flex: 1;
         width: 100%;
     }
     
-    .card-column:first-child {
+    .mixing-page .card-column:first-child {
         align-items: center;
     }
     
-    .card-column:last-child {
+    .mixing-page .card-column:last-child {
         align-items: center;
     }
     
-    .card-img {
+    .mixing-page .card-img {
         width: 100px;
         height: 100px;
     }
 }
 
 @media (max-width: 480px) {
-    .card {
+    .mixing-page .card {
         padding: 15px;
     }
     
-    .card-img {
+    .mixing-page .card-img {
         width: 60px;
         height: 60px;
     }
     
-    .card h3 {
+    .mixing-page .card h3 {
         font-size: 16px;
     }
     
-    .input-group {
+    .mixing-page .input-group {
         flex-wrap: wrap;
         justify-content: center;
         padding: 10px 15px;
     }
     
-    .input-group label {
+    .mixing-page .input-group label {
         font-size: 14px;
     }
     
-    .input-group input[type="number"] {
+    .mixing-page .input-group input[type="number"] {
         width: 100px;
     }
     
-    .btn-temperature {
+    .mixing-page .btn-temperature {
         padding: 8px 16px;
         font-size: 14px;
     }
     
-    .info-item strong {
+    .mixing-page .info-item strong {
         min-width: 90px;
     }
 }

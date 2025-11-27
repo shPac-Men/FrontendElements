@@ -1,47 +1,52 @@
 // src/components/Breadcrumbs/Breadcrumbs.tsx
 import type { FC } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ROUTES, ROUTE_LABELS } from '../../Routes';
+import { ROUTES, BREADCRUMB_LABELS } from '../../Routes';
 import './BreadCrumbs.css';
-
-interface BreadcrumbItem {
-  label: string;
-  path: string;
-}
 
 export const Breadcrumbs: FC = () => {
   const location = useLocation();
-  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const pathnames = location.pathname.split('/').filter((x) => x);
 
-  const breadcrumbs: BreadcrumbItem[] = [{ label: 'Главная', path: ROUTES.HOME }];
+  // Скрываем breadcrumbs на главной странице
+  if (location.pathname === ROUTES.HOME) {
+    return null;
+  }
 
-  let currentPath = '';
-  pathSegments.forEach((segment) => {
-    currentPath += `/${segment}`;
-
-    if (segment === 'elements' && pathSegments.length === 1) {
-      breadcrumbs.push({ label: 'Реактивы', path: ROUTES.ELEMENTS });
-    } else if (segment === 'mixing') {
-      breadcrumbs.push({ label: 'Расчет', path: ROUTES.MIXING });
-    } else if (!isNaN(Number(segment))) {
-      breadcrumbs.push({ label: 'Реактив', path: currentPath });
+  const getBreadcrumbLabel = (path: string, index: number, fullPathnames: string[]) => {
+    // Для детальной страницы реактива
+    if (index === fullPathnames.length - 1 && fullPathnames[0] === 'chemicals' && !isNaN(Number(path))) {
+      return 'Детали реактива';
     }
-  });
+    
+    const fullPath = `/${fullPathnames.slice(0, index + 1).join('/')}`;
+    return BREADCRUMB_LABELS[fullPath] || path.charAt(0).toUpperCase() + path.slice(1);
+  };
+
+  const getBreadcrumbPath = (index: number, fullPathnames: string[]) => {
+    return `/${fullPathnames.slice(0, index + 1).join('/')}`;
+  };
 
   return (
     <nav className="breadcrumbs">
-      {breadcrumbs.map((crumb, index) => (
-        <div key={index} className="breadcrumb-item">
-          {index < breadcrumbs.length - 1 ? (
-            <>
-              <Link to={crumb.path}>{crumb.label}</Link>
-              <span className="separator">/</span>
-            </>
+      <div className="breadcrumbs-container">
+        <Link to={ROUTES.HOME} className="breadcrumb-item">Главная</Link>
+        {pathnames.map((path, index) => {
+          const routeTo = getBreadcrumbPath(index, pathnames);
+          const isLast = index === pathnames.length - 1;
+          const label = getBreadcrumbLabel(path, index, pathnames);
+
+          return isLast ? (
+            <span key={routeTo} className="breadcrumb-item active">
+              {label}
+            </span>
           ) : (
-            <span className="active">{crumb.label}</span>
-          )}
-        </div>
-      ))}
+            <Link key={routeTo} to={routeTo} className="breadcrumb-item">
+              {label}
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 };
