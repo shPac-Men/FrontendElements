@@ -11,16 +11,18 @@ export interface ITunesResult {
   results: ITunesMusic[];
 }
 
+// https://itunes.apple.com/search?term=${name}
 export const getMusicByName = async (name = ""): Promise<ITunesResult> => {
-  return fetch(`https://itunes.apple.com/search?term=${name}`).then(
+  return fetch(``).then( 
     (response) => response.json()
   );
 };
 
+// https://itunes.apple.com/lookup?id=${id}
 export const getAlbumById = async (
   id: number | string
 ): Promise<ITunesResult> => {
-  return fetch(`https://itunes.apple.com/lookup?id=${id}`).then(
+  return fetch(``).then(
     (response) => response.json()
   );
 };

@@ -6,16 +6,17 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 export const HomePage: FC = () => {
   return (
     <Container>
-      <Row>
-        <Col md={6}>
-          <h1>Itunes Music</h1>
-          <p>
+      <Row className="justify-content-center text-center">
+        <Col md={8}>
+          <h1 className="mb-4">Itunes Music</h1>
+          <p className="lead mb-4">
             Добро пожаловать в Itunes Music! Здесь вы можете найти музыку на
             любой вкус.
           </p>
-          {/* Измените эту ссылку - с ROUTES.ALBUMS на /itunes */}
           <Link to="/itunes">
-            <Button variant="primary">Посмотреть музыку</Button>
+            <Button variant="primary" size="lg">
+              Найти музыку
+            </Button>
           </Link>
         </Col>
       </Row>
