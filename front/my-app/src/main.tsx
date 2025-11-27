@@ -1,12 +1,15 @@
 // main.tsx
+import 'bootstrap/dist/css/bootstrap.min.css'; // Убедитесь, что эта строка есть
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Link, Outlet } from 'react-router-dom';
 
 import App from './App.tsx';
+import StartPage from './pages/StartPage.tsx';
+// 1. Импортируем новую страницу ITunes
+import ITunesPage from './pages/ITunesPage/ITunesPage.tsx';
 import './index.css';
-// 1. Импортируем новую страницу
-import StartPage from './pages/StartPage.tsx'; 
 
 // Корневой компонент-обертка
 function Root() {
@@ -18,11 +21,11 @@ function Root() {
           <Link to="/">Главная (App)</Link>
         </li>
         <li>
-          <Link to="/new">Страница "New"</Link>
-        </li>
-        {/* 2. Добавляем ссылку на новую страницу */}
-        <li>
           <Link to="/start">Start Page</Link>
+        </li>
+        {/* 2. Добавляем ссылку на страницу iTunes */}
+        <li>
+          <Link to="/itunes">iTunes Search</Link>
         </li>
       </ul>
       <hr />
@@ -45,13 +48,13 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: 'new',
-        element: <h1>Это наша страница с чем-то новеньким</h1>,
-      },
-      // 3. Добавляем новый маршрут для StartPage
-      {
         path: 'start',
         element: <StartPage />,
+      },
+      // 3. Добавляем новый маршрут для ITunesPage
+      {
+        path: 'itunes',
+        element: <ITunesPage />,
       },
     ],
   },
