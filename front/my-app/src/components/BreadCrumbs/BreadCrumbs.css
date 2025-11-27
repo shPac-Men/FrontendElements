@@ -1,29 +1,35 @@
-:root {
-  --active_color: black;
-  --additional_color: gray;
-}
-
+/* src/components/Breadcrumbs/Breadcrumbs.css */
 .breadcrumbs {
-  list-style: none;
   display: flex;
-  gap: 10px;
-  padding: 20px;
+  align-items: center;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
 }
 
-.breadcrumbs * {
-  color: var(--additional_color);
-  transition: 0.5s;
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.breadcrumbs *:not(.slash):hover {
-  color: var(--active_color);
+.breadcrumbs a {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
-.breadcrumbs li {
-  position: relative;
-  cursor: pointer;
+.breadcrumbs a:hover {
+  color: #0052a3;
+  text-decoration: underline;
 }
 
-.breadcrumbs li:last-child {
-  color: var(--active_color);
+.breadcrumbs .active {
+  color: #666;
+  font-weight: 500;
+}
+
+.breadcrumbs .separator {
+  color: #999;
 }

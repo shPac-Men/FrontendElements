@@ -1,39 +1,47 @@
-import "./BreadCrumbs.css";
-import React from "react";
-import { Link } from "react-router-dom";
-import type { FC } from "react";
-import { ROUTES } from "../../Routes";
+// src/components/Breadcrumbs/Breadcrumbs.tsx
+import type { FC } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { ROUTES, ROUTE_LABELS } from '../../Routes';
+import './BreadCrumbs.css';
 
-interface ICrumb {
+interface BreadcrumbItem {
   label: string;
-  path?: string;
+  path: string;
 }
 
-interface BreadCrumbsProps {
-  crumbs: ICrumb[];
-}
+export const Breadcrumbs: FC = () => {
+  const location = useLocation();
+  const pathSegments = location.pathname.split('/').filter(Boolean);
 
-export const BreadCrumbs: FC<BreadCrumbsProps> = (props) => {
-  const { crumbs } = props;
+  const breadcrumbs: BreadcrumbItem[] = [{ label: 'Главная', path: ROUTES.HOME }];
+
+  let currentPath = '';
+  pathSegments.forEach((segment) => {
+    currentPath += `/${segment}`;
+
+    if (segment === 'elements' && pathSegments.length === 1) {
+      breadcrumbs.push({ label: 'Реактивы', path: ROUTES.ELEMENTS });
+    } else if (segment === 'mixing') {
+      breadcrumbs.push({ label: 'Расчет', path: ROUTES.MIXING });
+    } else if (!isNaN(Number(segment))) {
+      breadcrumbs.push({ label: 'Реактив', path: currentPath });
+    }
+  });
 
   return (
-    <ul className="breadcrumbs">
-      <li>
-        <Link to={ROUTES.HOME}>Главная</Link>
-      </li>
-      {!!crumbs.length &&
-        crumbs.map((crumb, index) => (
-          <React.Fragment key={index}>
-            <li className="slash">/</li>
-            {index === crumbs.length - 1 ? (
-              <li>{crumb.label}</li>
-            ) : (
-              <li>
-                <Link to={crumb.path || ""}>{crumb.label}</Link>
-              </li>
-            )}
-          </React.Fragment>
-        ))}
-    </ul>
+    <nav className="breadcrumbs">
+      {breadcrumbs.map((crumb, index) => (
+        <div key={index} className="breadcrumb-item">
+          {index < breadcrumbs.length - 1 ? (
+            <>
+              <Link to={crumb.path}>{crumb.label}</Link>
+              <span className="separator">/</span>
+            </>
+          ) : (
+            <span className="active">{crumb.label}</span>
+          )}
+        </div>
+      ))}
+    </nav>
   );
 };
