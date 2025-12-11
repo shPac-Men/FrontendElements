@@ -10,7 +10,7 @@
     margin: 0;
     padding: 0;
     color: #222;
-    background: url("/FrontendElements/staticimages/calcbec.jpg") no-repeat center center fixed;
+    background: url("/staticimages/calcbec.jpg") no-repeat center center fixed;
     background-size: cover;
     min-height: 100vh;
 }

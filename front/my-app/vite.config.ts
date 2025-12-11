@@ -2,10 +2,12 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const isTauri = process.env.TAURI_ENV_PLATFORM !== undefined;
 const REPO_NAME = 'FrontendElements';
 
 export default defineConfig({
-  base: '/FrontendElements/',
+  //base: '/FrontendElements/',
+  base: isTauri ? '/' : '/FrontendElements/',
   plugins: [
     react(),
     VitePWA({

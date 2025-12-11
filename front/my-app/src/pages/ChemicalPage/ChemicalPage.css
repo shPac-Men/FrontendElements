@@ -14,7 +14,8 @@
 /* Hero секция */
 .chemistry-page .hero {
     height: 50vh;
-    background: url("/FrontendElements/staticimages/MainFone.jpg") no-repeat center center;
+    background: url("/staticimages/MainFone.jpg") no-repeat center center;
+    /* url("/FrontendElements/staticimages/MainFone.jpg") no-repeat center center; */
     background-size: cover;
     position: relative;
     color: white;

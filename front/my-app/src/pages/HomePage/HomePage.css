@@ -10,7 +10,7 @@
 .hero {
     height: 40vh;
     min-height: 300px;
-    background: url("/FrontendElements/staticimages/MainFone.jpg") no-repeat center center;
+    background: url("/staticimages/MainFone.jpg") no-repeat center center;
     background-size: cover;
     position: relative;
     color: white;
