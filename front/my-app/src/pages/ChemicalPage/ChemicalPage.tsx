@@ -6,15 +6,20 @@ import { getChemicals, addToMixing, getCartCount } from '../../modules/chemistry
 import './ChemicalPage.css';
 import { ROUTES } from '../../Routes';
 import reactSvg from '../../assets/react.svg';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setSearchQuery } from '../../store/filterSlice';
+
 
 const DEFAULT_IMAGE = reactSvg;
 
 export const ChemicalPage: FC = () => {
   const [chemicals, setChemicals] = useState<ChemicalElement[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(0);
 
+  const dispatch = useAppDispatch();
+  const searchQuery = useAppSelector((state) => state.filter.searchQuery);
+  
   const loadChemicals = async (query?: string) => {
     setLoading(true);
     try {
@@ -27,6 +32,13 @@ export const ChemicalPage: FC = () => {
     }
   };
 
+  useEffect(() => {
+    // При первом заходе на страницу подгружаем с учетом уже сохраненного searchQuery
+    loadChemicals(searchQuery || undefined);
+    loadCartCount();
+  }, []); // зависимость оставляем пустой, чтобы не зациклить запросы
+
+
   const loadCartCount = async () => {
     try {
       const count = await getCartCount();
@@ -35,11 +47,6 @@ export const ChemicalPage: FC = () => {
       console.error('Error loading cart count:', error);
     }
   };
-
-  useEffect(() => {
-    loadChemicals();
-    loadCartCount();
-  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,7 +92,7 @@ export const ChemicalPage: FC = () => {
             name="query" 
             placeholder="Введите запрос" 
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => dispatch(setSearchQuery(e.target.value))}
           />
           <button type="submit">Найти</button>
         </form>

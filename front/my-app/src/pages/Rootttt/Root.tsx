@@ -15,7 +15,7 @@ export const Root: FC = () => {
           </Link>
           <div className="nav-links">
             <Link to={ROUTES.HOME}>Главная</Link>
-            <Link to={ROUTES.ELEMENTS}>Реактивы</Link>
+            <Link to={ROUTES.CHEMICALS}>Реактивы</Link>
             <Link to={ROUTES.MIXING}>Расчет</Link>
           </div>
         </div>
