@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import type { FC } from 'react';
-import { Link } from 'react-router-dom';
-import { getMixingCart, removeFromMixing } from '../../modules/chemistryApi';
+import { Link, useNavigate } from 'react-router-dom';
+import { getMixingCart, removeFromMixing } from '../../modules/chemistryApi'; // Можно заменить на thunk draftSlice, если хочешь
 import { ROUTES } from '../../Routes';
 import './MixingPage.css';
 import { STATIC_BASE } from '../../config/config';
-
+import { useAppSelector } from '../../store/hooks'; // Добавляем хук
+import { api } from '../../api'; // Добавляем API для создания заявки
 
 interface MixingItem {
   id: number;
@@ -21,13 +22,16 @@ interface MixingItem {
   };
 }
 
-
 export const MixingPage: FC = () => {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<MixingItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [addedWater, setAddedWater] = useState(100);
   const [result, setResult] = useState('');
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
+  // Проверяем авторизацию
+  const { user } = useAppSelector((state) => state.auth);
 
   const loadCart = async () => {
     setLoading(true);
@@ -41,122 +45,122 @@ export const MixingPage: FC = () => {
     }
   };
 
-
   useEffect(() => {
     loadCart();
   }, []);
-
 
   const handleAddWater = () => {
     alert(`Добавленная вода применена: ${addedWater} мл`);
     setResult('');
   };
 
-
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const btn = document.getElementById('createRequestBtn') as HTMLButtonElement;
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = 'Расчет...';
-    }
-
+    setResult('Расчет...');
     setTimeout(() => {
       const calculatedPH = (7.0).toFixed(1);
       setResult(`pH: ${calculatedPH} с добавленной водой`);
-      
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = 'Рассчитать';
-      }
-    }, 2000);
+    }, 1000);
   };
 
-
-  const handleRemoveFromMixing = async (element_id: number) => {
-    if (!confirm('Удалить этот элемент из корзины?')) {
+  // --- НОВАЯ ФУНКЦИЯ ОФОРМЛЕНИЯ ЗАЯВКИ ---
+  const handleCreateOrder = async () => {
+    if (!user) {
+      alert('Для оформления заявки нужно войти в систему');
+      navigate(ROUTES.LOGIN);
       return;
     }
+    
+    if (cartItems.length === 0) return;
+
+    if (!confirm('Вы уверены, что хотите оформить заявку?')) return;
+
+    setIsCreatingOrder(true);
+    try {
+      // Отправляем запрос на создание заявки
+      await api.admin.mixedCreate({ 
+        title: `Заявка от ${new Date().toLocaleTimeString()}`,
+        description: `Добавлено воды: ${addedWater} мл`
+      });
+      
+      alert('Заявка успешно оформлена!');
+      // После оформления корзина должна очиститься (на бэке), переходим к списку заявок
+      navigate(ROUTES.ORDERS);
+    } catch (error) {
+      console.error('Ошибка оформления:', error);
+      alert('Не удалось оформить заявку');
+    } finally {
+      setIsCreatingOrder(false);
+    }
+  };
+  // ---------------------------------------
+
+  const handleRemoveFromMixing = async (element_id: number) => {
+    if (!confirm('Удалить этот элемент из корзины?')) return;
 
     try {
       const success = await removeFromMixing(element_id);
       if (success) {
         loadCart();
-        alert('Элемент удален из корзины');
       } else {
-        alert('Ошибка при удалении из корзины');
+        alert('Ошибка при удалении');
       }
     } catch (error) {
-      console.error('Error removing from mixing:', error);
-      alert('Ошибка при удалении из корзины');
+      console.error('Error removing:', error);
     }
   };
-
 
   const handleVolumeChange = (id: number, newVolume: number) => {
     console.log(`Change volume for item ${id} to ${newVolume}ml`);
   };
 
-
   return (
     <div className="mixing-page">
       <header>
-        <Link to={ROUTES.HOME} className="home-link">  {/* ← Измени */}
+        <Link to={ROUTES.HOME} className="home-link">
           <img src={`${STATIC_BASE}/image.svg`} alt="На главную" />
         </Link>
+        <h2 style={{marginLeft: '1rem', color: 'white'}}>Смешивание (Черновик)</h2>
       </header>
 
       <div className="temperature-section">
-        <form className="temperature-form" id="temperatureForm">
-          <div className="input-group">
-            <label htmlFor="added_water">Добавленная вода (мл):</label>
+        <div className="input-group">
+            <label>Добавленная вода (мл):</label>
             <input 
               type="number" 
-              id="added_water" 
-              name="added_water" 
-              placeholder="100" 
-              step="1" 
-              min="0" 
               value={addedWater}
-              onChange={(e) => setAddedWater(parseInt(e.target.value) || 100)}
+              onChange={(e) => setAddedWater(parseInt(e.target.value) || 0)}
             />
-            <button 
-              type="button" 
-              className="btn-temperature"
-              onClick={handleAddWater}
-            >
-              Добавить
+            <button type="button" className="btn-temperature" onClick={handleAddWater}>
+              Применить
             </button>
-          </div>
-        </form>
-
-        <div className="result-display">
-          <input 
-            type="text" 
-            placeholder="Результат" 
-            readOnly
-            value={result}
-            id="resultField"
-          />
         </div>
 
-        <form onSubmit={handleCalculate} id="requestForm">
-          <input 
-            type="hidden" 
-            name="added_water" 
-            id="hiddenAddedWater" 
-            value={addedWater} 
-          />
-          <button 
-            type="submit" 
-            className="btn calculate-btn" 
-            id="createRequestBtn" 
-            disabled={cartItems.length === 0}
-          >
-            Рассчитать
-          </button>
-        </form>
+        <div className="result-display">
+          <input type="text" readOnly value={result} placeholder="Результат расчета" />
+        </div>
+
+        <div style={{ display: 'flex', gap: '1rem' }}>
+            <button 
+                type="button" 
+                className="btn calculate-btn" 
+                onClick={handleCalculate}
+                disabled={cartItems.length === 0}
+            >
+                Рассчитать pH
+            </button>
+
+            {/* КНОПКА ОФОРМЛЕНИЯ */}
+            <button 
+                type="button" 
+                className="btn" 
+                style={{ backgroundColor: '#28a745' }} // Зеленая
+                onClick={handleCreateOrder}
+                disabled={cartItems.length === 0 || isCreatingOrder}
+            >
+                {isCreatingOrder ? 'Оформляем...' : 'Оформить заявку'}
+            </button>
+        </div>
       </div>
 
       <main>
@@ -166,7 +170,7 @@ export const MixingPage: FC = () => {
           ) : cartItems.length === 0 ? (
             <div className="empty-cart">
               <p>Корзина пуста</p>
-              <Link to={ROUTES.CHEMICALS} className="btn">Добавить элементы</Link>  {/* ← Измени */}
+              <Link to={ROUTES.CHEMICALS} className="btn">Добавить элементы</Link>
             </div>
           ) : (
             cartItems.map((item) => (
@@ -177,36 +181,22 @@ export const MixingPage: FC = () => {
                       src={item.element.image} 
                       alt={item.element.name} 
                       className="card-img"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = `${STATIC_BASE}/default_element.png`;
-                      }}
+                      onError={(e) => { e.currentTarget.src = `${STATIC_BASE}/default_element.png`; }}
                     />
                   </div>
                   <div className="card-column">
                     <h3>{item.element.name}</h3>
-                    <div className="info-item">
-                      <strong>pH:</strong> {item.element.ph}
-                    </div>
-                    <div className="info-item">
-                      <strong>Концентрация:</strong> {item.element.concentration}
-                    </div>
-                    <div className="info-item">
-                      <strong>Температура:</strong> 25°C
-                    </div>
+                    <div className="info-item"><strong>pH:</strong> {item.element.ph}</div>
+                    <div className="info-item"><strong>Концентрация:</strong> {item.element.concentration}</div>
                   </div>
                   <div className="card-column">
                     <div className="mass-input">
-                      <label htmlFor={`mass-${item.element.id}`}>Объем (мл):</label>
+                      <label>Объем (мл):</label>
                       <input 
                         type="number" 
-                        id={`mass-${item.element.id}`} 
-                        className="mass-field" 
                         placeholder={item.volume.toString()} 
-                        step="0.1" 
-                        min="0" 
                         value={item.volume}
-                        onChange={(e) => handleVolumeChange(item.element.id, parseFloat(e.target.value) || item.volume)}
+                        onChange={(e) => handleVolumeChange(item.element.id, parseFloat(e.target.value))}
                       />
                     </div>
                     <button 
