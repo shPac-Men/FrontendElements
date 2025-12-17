@@ -63,7 +63,7 @@ export const ChemicalPage: FC = () => {
 
     try {
       await dispatch(addToDraft({ element_id: id, volume: 100 })).unwrap();
-      alert('Реактив добавлен!');
+      //alert('Реактив добавлен!');
       loadCartCount();
     } catch (error) {
       console.error('Ошибка добавления:', error);
