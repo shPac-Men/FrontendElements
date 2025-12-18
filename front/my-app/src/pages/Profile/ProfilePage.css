@@ -1,0 +1,102 @@
+/* Стили для страницы профиля, наследуются от .chemistry-page */
+
+.chemistry-page .page-title {
+    margin-left: 1rem;
+    color: white;
+}
+
+.chemistry-page .profile-card {
+    max-width: 500px;
+    margin: 2rem auto;
+    flex-direction: column; /* Убеждаемся, что контент в карточке идет вертикально */
+}
+
+.chemistry-page .profile-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.chemistry-page .profile-header h2 {
+    margin-bottom: 0.5rem;
+}
+
+.chemistry-page .role-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.chemistry-page .profile-card form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chemistry-page .profile-card .form-group {
+    margin-bottom: 1rem;
+}
+
+.chemistry-page .profile-card .form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+/* Модификатор для кнопок на всю ширину */
+.chemistry-page .btn.btn-block {
+    width: 100%;
+}
+
+.chemistry-page .update-message {
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.chemistry-page .update-message.success {
+    color: #155724;
+    background-color: #d4edda;
+}
+
+.chemistry-page .update-message.error {
+    color: #721c24;
+    background-color: #f8d7da;
+}
+
+/* Прижимаем topbar к левому верхнему углу внутри hero */
+.chemistry-page .hero {
+  position: relative;
+}
+
+.chemistry-page .hero .profile-hero-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  height: 60px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  z-index: 2; /* поверх затемнения hero::before */
+}
+
+/* Кнопка "домой" */
+.chemistry-page .hero .profile-hero-topbar .home-link img {
+  width: 50px;
+  height: 50px;
+  display: block;
+}
+
+/* Заголовок — строго белым */
+.chemistry-page .hero .profile-hero-topbar .page-title {
+  color: #fff !important;
+}

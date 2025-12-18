@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import type { FC } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import type { ChemicalElement } from '../../types/chemistry';
-import { getChemicals, getCartCount } from '../../modules/chemistryApi';
+import { getChemicals } from '../../modules/chemistryApi'; 
 import './ChemicalPage.css';
 import { ROUTES } from '../../Routes';
 import reactSvg from '../../assets/react.svg';
@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setSearchQuery } from '../../store/filterSlice';
 import { addToDraft } from '../../store/draftSlice';
 import { STATIC_BASE } from '../../config/config';
+import { api } from '../../api';
 
 const DEFAULT_IMAGE = reactSvg;
 
@@ -36,19 +37,45 @@ export const ChemicalPage: FC = () => {
     }
   };
 
+  // --- ОБНОВЛЕННАЯ ФУНКЦИЯ ---
+  const loadCartCount = async () => {
+    try {
+      const response = await api.mixing.cartIconList();
+      
+      // Принудительное приведение типа к any для доступа к любым полям
+      const anyRes = response as any;
+      let count = 0;
+
+      // Логика поиска поля ItemsCount / items_count
+      // 1. Проверяем внутри data (если это axios response)
+      if (anyRes.data) {
+         count = anyRes.data.ItemsCount ?? anyRes.data.items_count ?? 0;
+      } 
+      // 2. Проверяем в корне объекта (если клиент вернул тело сразу)
+      else if (anyRes.ItemsCount !== undefined || anyRes.items_count !== undefined) {
+         count = anyRes.ItemsCount ?? anyRes.items_count ?? 0;
+      }
+      
+      console.log('Cart count debug:', count, 'Full response:', anyRes);
+      setCartCount(count);
+
+      // В функции loadCartCount добавьте логирование:
+
+    } catch (error) {
+      console.error('Error loading cart count:', error);
+      setCartCount(0);
+    }
+  };
+
   useEffect(() => {
     loadChemicals(searchQuery || undefined);
     loadCartCount();
   }, []);
 
-  const loadCartCount = async () => {
-    try {
-      const count = await getCartCount();
-      setCartCount(count);
-    } catch (error) {
-      console.error('Error loading cart count:', error);
-    }
-  };
+  // Обновляем при смене пользователя
+  useEffect(() => {
+    loadCartCount();
+  }, [user]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,8 +90,8 @@ export const ChemicalPage: FC = () => {
 
     try {
       await dispatch(addToDraft({ element_id: id, volume: 100 })).unwrap();
-      //alert('Реактив добавлен!');
-      loadCartCount();
+      // Обновляем иконку сразу после добавления
+      await loadCartCount();
     } catch (error) {
       console.error('Ошибка добавления:', error);
       alert('Ошибка при добавлении');
@@ -74,10 +101,8 @@ export const ChemicalPage: FC = () => {
   return (
     <div className="chemistry-page">
       <section className="hero">
-        {/* Хедер теперь управляется CSS-классом .hero-header */}
         <header className="hero-header">
           <h1>
-            {/* Обернул лого в Link и дал класс, чтобы вернуть "слева" или "по центру" через CSS */}
             <Link to={ROUTES.HOME} className="hero-logo-link">
                <img src={`${STATIC_BASE}/image.svg`} alt="home" width="60" />
             </Link>
@@ -88,7 +113,11 @@ export const ChemicalPage: FC = () => {
       <div className="search-section">
         <Link to={ROUTES.MIXING} className="cart-link">
           <img src={`${STATIC_BASE}/breaker.svg`} alt="cart" />
-          {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+          
+          {/* Условие отображения: count > 0 */}
+          {cartCount > 0 && (
+            <span className="cart-count">{cartCount}</span>
+          )}
         </Link>
         
         <form onSubmit={handleSearch}>

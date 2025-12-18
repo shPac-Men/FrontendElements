@@ -77,6 +77,8 @@ border-radius: 6px;
 text-decoration: none;
 transition: all 0.2s;
 position: relative;
+  position: relative; 
+  overflow: visible; /* ВАЖНО: чтобы кружок не обрезался, если он вылезает */
 }
 
 
@@ -95,22 +97,23 @@ transform: scale(1.3);
 
 /* Стили для счетчика корзины */
 .chemistry-page .cart-count {
-position: absolute;
-top: -8px;
-right: -8px;
-background: #ff4444;
-color: white;
-border-radius: 50%;
-width: 20px;
-height: 20px;
-font-size: 12px;
-font-weight: bold;
-display: flex;
-align-items: center;
-justify-content: center;
-line-height: 1;
-border: 2px solid white;
-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  position: absolute;
+  top: -10px;        /* Чуть выше */
+  right: -10px;      /* Чуть правее */
+  background: #ff4444;
+  color: white;
+  border-radius: 50%;
+  width: 22px;       /* Чуть больше */
+  height: 22px;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 100;      /* ВАЖНО: чтобы быть поверх всего */
 }
 
 

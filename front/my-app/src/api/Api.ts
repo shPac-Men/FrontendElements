@@ -89,6 +89,8 @@ export interface HandlerMixedDetailResponse {
   date_update?: string;
   id?: number;
   items?: HandlerMixedDetailItem[];
+  /** <--- Добавляем с JSON тегом */
+  items_count?: number;
   moderator_login?: string;
   ph?: number;
   status?: string;
@@ -103,6 +105,8 @@ export interface HandlerMixedListItem {
   date_finish?: string;
   date_update?: string;
   id?: number;
+  /** <--- Добавляем */
+  items_count?: number;
   moderator_login?: string;
   ph?: number;
   status?: string;
@@ -987,11 +991,13 @@ export class Api<
      * @name CartIconList
      * @summary Get cart icon info
      * @request GET:/mixing/cart-icon
+     * @secure
      */
     cartIconList: (params: RequestParams = {}) =>
       this.request<HandlerCartIconResponse, any>({
         path: `/mixing/cart-icon`,
         method: "GET",
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,

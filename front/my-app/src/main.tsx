@@ -33,8 +33,10 @@ const RootLayout = () => (
   </div>
 );
 
+
 store.dispatch(initFromLocalStorage());
 store.dispatch(loadProfile());
+
 
 const router = createBrowserRouter(
   [

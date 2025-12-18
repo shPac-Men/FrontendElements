@@ -1,11 +1,10 @@
-// src/pages/Profile/ProfilePage.tsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { updateProfile } from '../../store/authSlice';
 import { ROUTES } from '../../Routes';
 import { STATIC_BASE } from '../../config/config';
-//import './ProfilePage.css'; // Можно отдельный css или общий
+import './ProfilePage.css'; // Подключаем новые стили
 
 export const ProfilePage = () => {
   const dispatch = useAppDispatch();
@@ -13,6 +12,7 @@ export const ProfilePage = () => {
   
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,9 +20,11 @@ export const ProfilePage = () => {
     try {
       await dispatch(updateProfile({ password })).unwrap();
       setMsg('Пароль успешно обновлен');
+      setIsError(false);
       setPassword('');
     } catch (e) {
-      setMsg('Ошибка обновления');
+      setMsg('Ошибка обновления пароля');
+      setIsError(true);
     }
   };
 
@@ -31,23 +33,24 @@ export const ProfilePage = () => {
   return (
     <div className="chemistry-page">
       <header className="hero">
-        <h1>
-          <Link to={ROUTES.HOME}>
+        <div className="profile-hero-topbar">
+            <Link to={ROUTES.HOME} className="home-link">
             <img src={`${STATIC_BASE}/image.svg`} alt="home" />
-          </Link>
-          <span style={{ marginLeft: '1rem', color: 'white' }}>Личный кабинет</span>
-        </h1>
-      </header>
+            </Link>
+
+    <span className="page-title">Личный кабинет</span>
+  </div>
+</header>
 
       <main>
-        <div className="card profile-card" style={{ maxWidth: '500px', margin: '2rem auto', flexDirection: 'column' }}>
-            <div className="profile-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <img src={`${STATIC_BASE}/default_element.png`} alt="avatar" style={{ width: 100, borderRadius: '50%' }} />
+        <div className="card profile-card">
+            <div className="profile-header">
+                {/* Аватар убран */}
                 <h2>{user.login}</h2>
                 <p className="role-badge">Роль: {user.role || 'Пользователь'}</p>
             </div>
 
-            <form onSubmit={handleUpdate} style={{ width: '100%' }}>
+            <form onSubmit={handleUpdate}>
                 <h3>Смена пароля</h3>
                 <div className="form-group">
                     <input 
@@ -56,12 +59,11 @@ export const ProfilePage = () => {
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         className="form-input"
-                        style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
                     />
                 </div>
-                <button type="submit" className="btn" style={{ width: '100%' }}>Сохранить новый пароль</button>
+                <button type="submit" className="btn btn-block">Сохранить новый пароль</button>
             </form>
-            {msg && <p style={{ textAlign: 'center', marginTop: '1rem', color: 'green' }}>{msg}</p>}
+            {msg && <p className={`update-message ${isError ? 'error' : 'success'}`}>{msg}</p>}
         </div>
       </main>
     </div>
