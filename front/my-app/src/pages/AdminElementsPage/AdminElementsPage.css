@@ -1,0 +1,195 @@
+/* Используем базовые стили из chemistry-page */
+.admin-elements-container {
+  background: white;
+  padding: 40px 20px;
+  min-height: calc(100vh - 50vh);
+}
+
+/* Форма редактирования */
+.admin-elements-container .edit-form {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 25px;
+  margin: 30px auto;
+  max-width: 600px;
+}
+
+.admin-elements-container .edit-form h3 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #222;
+}
+
+.admin-elements-container .form-group {
+  margin-bottom: 15px;
+}
+
+.admin-elements-container .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.admin-elements-container .form-group input,
+.admin-elements-container .form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+}
+
+.admin-elements-container .form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.admin-elements-container .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.admin-elements-container .form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.admin-elements-container .btn-create {
+  background: #28a745;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.admin-elements-container .btn-create:hover {
+  background: #218838;
+}
+
+.admin-elements-container .btn-save {
+  background: #007bff;
+  color: white;
+}
+
+.admin-elements-container .btn-save:hover {
+  background: #0056b3;
+}
+
+.admin-elements-container .btn-cancel {
+  background: #6c757d;
+  color: white;
+}
+
+.admin-elements-container .btn-cancel:hover {
+  background: #545b62;
+}
+
+.admin-elements-container .btn-edit {
+  background: #007bff;
+  color: white;
+  width: 100%;
+}
+
+.admin-elements-container .btn-edit:hover {
+  background: #0056b3;
+}
+
+.admin-elements-container .btn-delete {
+  background: #dc3545;
+  color: white;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.admin-elements-container .btn-delete:hover {
+  background: #c82333;
+}
+
+/* Карточки элементов */
+.admin-elements-container .card {
+  background: #fff;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 25px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.admin-elements-container .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.admin-elements-container .card-img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 16px;
+}
+
+.admin-elements-container .card h3 {
+  font-size: 20px;
+  margin: 12px 0;
+  font-weight: 600;
+}
+
+.admin-elements-container .card-description {
+  font-size: 14px;
+  color: #666;
+  margin: 8px 0;
+  text-align: left;
+  min-height: 40px;
+}
+
+.admin-elements-container .card-properties {
+  text-align: left;
+  margin: 12px 0;
+}
+
+.admin-elements-container .card-properties p {
+  font-size: 14px;
+  margin: 6px 0;
+  color: #333;
+}
+
+.admin-elements-container .card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  width: 100%;
+}
+
+/* Адаптивность */
+@media (max-width: 576px) {
+  .admin-elements-container {
+    padding: 24px 12px;
+  }
+
+  .admin-elements-container .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-elements-container .search-section {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .admin-elements-container .search-section form {
+    width: 100%;
+  }
+}
+

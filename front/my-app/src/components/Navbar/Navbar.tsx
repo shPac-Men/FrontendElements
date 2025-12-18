@@ -47,6 +47,14 @@ export const Navbar: FC = () => {
               <div className="auth-dropdown">
                 <Link to={ROUTES.ORDERS}>Мои заявки</Link>
                 <Link to={ROUTES.PROFILE}>Профиль</Link>
+                {user.is_moderator && (
+                  <>
+                    <div className="dropdown-divider"></div>
+                    <Link to={ROUTES.ADMIN_ORDERS}>Управление заявками</Link>
+                    <Link to={ROUTES.ADMIN_ELEMENTS}>Управление элементами</Link>
+                  </>
+                )}
+                <div className="dropdown-divider"></div>
                 <button onClick={handleLogout} className="btn-logout-link">Выход</button>
               </div>
             </div>

@@ -25,7 +25,7 @@ const initialState: OrdersState = {
   error: null,
 };
 
-// 1. Получение списка заявок
+// 1. Получение списка заявок (для обычных пользователей)
 export const fetchOrders = createAsyncThunk(
   'orders/fetchOrders',
   async (_, { rejectWithValue }) => {
@@ -44,6 +44,43 @@ export const fetchOrders = createAsyncThunk(
       
     } catch (err: any) {
       return rejectWithValue(err.message || 'Ошибка загрузки заявок');
+    }
+  }
+);
+
+// Получение списка всех заявок (для модератора/админа)
+export const fetchAllOrders = createAsyncThunk(
+  'orders/fetchAllOrders',
+  async (filters?: { status?: string; date_from?: string; date_to?: string }, { rejectWithValue }) => {
+    try {
+      const query: any = {};
+      if (filters?.status) query.status = filters.status;
+      if (filters?.date_from) query.date_from = filters.date_from;
+      if (filters?.date_to) query.date_to = filters.date_to;
+      
+      const response = await api.admin.mixedList(query);
+      const data = response.data as any;
+      
+      if (Array.isArray(data)) {
+        return data as Order[];
+      }
+      
+      return (data.items || data.data || []) as Order[];
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Ошибка загрузки заявок');
+    }
+  }
+);
+
+// Обновление статуса заявки
+export const updateOrderStatus = createAsyncThunk(
+  'orders/updateOrderStatus',
+  async ({ orderId, status }: { orderId: number; status: string }, { rejectWithValue }) => {
+    try {
+      await api.admin.mixedUpdate(orderId, { status });
+      return { orderId, status };
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Ошибка обновления статуса');
     }
   }
 );
@@ -72,7 +109,7 @@ const ordersSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    // Список
+    // Список (обычные пользователи)
     builder.addCase(fetchOrders.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -84,6 +121,28 @@ const ordersSlice = createSlice({
     builder.addCase(fetchOrders.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
+    });
+
+    // Список всех заявок (админ/модератор)
+    builder.addCase(fetchAllOrders.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchAllOrders.fulfilled, (state, action) => {
+      state.loading = false;
+      state.list = action.payload;
+    });
+    builder.addCase(fetchAllOrders.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
+    // Обновление статуса
+    builder.addCase(updateOrderStatus.fulfilled, (state, action) => {
+      const order = state.list.find(o => o.id === action.payload.orderId);
+      if (order) {
+        order.status = action.payload.status;
+      }
     });
 
     // Детали

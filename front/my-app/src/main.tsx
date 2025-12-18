@@ -15,6 +15,8 @@ import { RegisterPage } from './pages/Auth/RegisterPage';
 import { ProfilePage } from './pages/Profile/ProfilePage';
 import { OrdersPage } from './pages/Orders/OrdersPage';
 import { OrderDetailPage } from './pages/OrderDetailPage/OrderDetailPage';
+import { AdminOrdersPage } from './pages/AdminOrdersPage/AdminOrdersPage';
+import { AdminElementsPage } from './pages/AdminElementsPage/AdminElementsPage';
 // ----------------------------------
 
 import { Navbar } from './components/Navbar/Navbar';
@@ -54,6 +56,8 @@ const router = createBrowserRouter(
         { path: ROUTES.REGISTER, element: <RegisterPage /> },
         { path: ROUTES.PROFILE, element: <ProfilePage /> },
         { path: ROUTES.ORDERS, element: <OrdersPage /> },
+        { path: ROUTES.ADMIN_ORDERS, element: <AdminOrdersPage /> },
+        { path: ROUTES.ADMIN_ELEMENTS, element: <AdminElementsPage /> },
         { path: ROUTES.ORDER_DETAIL, element: <OrderDetailPage /> },
         
       ],

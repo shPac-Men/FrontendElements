@@ -12,6 +12,8 @@ export const ROUTES = {
   PROFILE: '/profile',
   ORDERS: '/orders',
   ORDER_DETAIL: '/orders/:id',
+  ADMIN_ORDERS: '/admin/orders',
+  ADMIN_ELEMENTS: '/admin/elements',
   DRAFT: '/draft',
 } as const;
 
@@ -28,6 +30,8 @@ export const ROUTE_LABELS = {
   PROFILE: 'Профиль',
   ORDERS: 'Мои заявки',
   ORDER_DETAIL: 'Детали заявки',
+  ADMIN_ORDERS: 'Управление заявками',
+  ADMIN_ELEMENTS: 'Управление элементами',
   DRAFT: 'Черновик заявки',
 } as const;
 

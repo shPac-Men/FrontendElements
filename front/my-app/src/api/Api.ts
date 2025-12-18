@@ -112,6 +112,7 @@ export interface HandlerMixedListItem {
   id?: number;
   /** <--- Добавляем */
   items_count?: number;
+  processed_count?: number;
   moderator_login?: string;
   ph?: number;
   status?: string;
@@ -465,6 +466,10 @@ export class Api<
         status?: string;
         /** Filter by creator login */
         creator?: string;
+        /** Filter by date from (YYYY-MM-DD) */
+        date_from?: string;
+        /** Filter by date to (YYYY-MM-DD) */
+        date_to?: string;
         /** Limit results (default: 50) */
         limit?: number;
         /** Offset results (default: 0) */

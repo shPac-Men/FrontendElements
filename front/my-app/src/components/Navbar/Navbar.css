@@ -117,6 +117,12 @@
   color: white;
 }
 
+.dropdown-divider {
+  height: 1px;
+  background: #555;
+  margin: 8px 0;
+}
+
 .btn-logout-link {
   background: none;
   border: 1px solid #ff4d4f;
