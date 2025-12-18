@@ -13,12 +13,19 @@ const TOKEN_KEY = "accessToken";
 
 export const login = createAsyncThunk<HandlerUserInfo, HandlerLoginRequest>(
   "auth/login",
-  async (dto) => {
+  async (dto, { dispatch }) => { // <--- 1. Добавляем { dispatch } вторым аргументом
     const res = await api.auth.loginCreate(dto);
     const data: HandlerLoginResponse = res.data;
     const token = data.token ?? "";
+    
     if (token) localStorage.setItem(TOKEN_KEY, token);
     api.setSecurityData(token ? { token } : null);
+    
+    // <--- 2. ДОБАВЛЯЕМ СБРОС ФИЛЬТРОВ ПРИ ВХОДЕ
+    console.log("LOGIN: Сбрасываем фильтры после успешного входа");
+    dispatch(resetFilters()); 
+    // ----------------------------------------
+
     return data.user ?? {};
   }
 );
