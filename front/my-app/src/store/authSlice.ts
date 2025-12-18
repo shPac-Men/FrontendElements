@@ -1,7 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../api";
-import type { HandlerLoginRequest, HandlerLoginResponse, HandlerRegisterRequest, HandlerUserInfo, HandlerUpdateUserRequest } from "../api/Api";
-// Импорт resetFilters/resetDraft добавим позже, пока можно без них
+import { resetFilters } from './filterSlice'; // <--- Импортируем экшен сброса
+import type { 
+  HandlerLoginRequest, 
+  HandlerLoginResponse, 
+  HandlerRegisterRequest, 
+  HandlerUserInfo, 
+  HandlerUpdateUserRequest 
+} from "../api/Api";
 
 const TOKEN_KEY = "accessToken";
 
@@ -28,8 +34,7 @@ export const loadProfile = createAsyncThunk<HandlerUserInfo>(
   "auth/loadProfile",
   async () => {
     const res = await api.auth.profileList();
-    // Предполагаем, что профиль лежит в data.data или data напрямую,
-    // подстрой под свой HandlerSuccessResponse
+    // Адаптируйте под структуру ответа вашего бэка
     return (res.data as any).data ?? res.data ?? {};
   }
 );
@@ -41,11 +46,21 @@ export const updateProfile = createAsyncThunk<void, HandlerUpdateUserRequest>(
   }
 );
 
-export const logout = createAsyncThunk("auth/logout", async () => {
-  try { await api.auth.logoutCreate(); } catch(e) {/* ignore */}
-  localStorage.removeItem(TOKEN_KEY);
-  api.setSecurityData(null);
-});
+// --- ИСПРАВЛЕННЫЙ LOGOUT ---
+export const logout = createAsyncThunk(
+  "auth/logout", 
+  async (_, { dispatch }) => { // Добавляем { dispatch }
+    console.log("AUTH: Logout started");
+    try { await api.auth.logoutCreate(); } catch(e) {/* ignore */}
+    
+    localStorage.removeItem(TOKEN_KEY);
+    api.setSecurityData(null);
+    
+    // Сбрасываем фильтры при выходе
+    console.log("AUTH: Dispatching resetFilters");
+    dispatch(resetFilters());
+  }
+);
 
 type AuthState = {
   user: HandlerUserInfo | null;

@@ -23,11 +23,15 @@ export const ChemicalPage: FC = () => {
   const navigate = useNavigate();
 
   const { user } = useAppSelector((state) => state.auth);
-  const searchQuery = useAppSelector((state) => state.filter.searchQuery);
+  // Предполагаем, что поле называется query или searchQuery (должно совпадать с filterSlice)
+  const searchQuery = useAppSelector((state) => state.filter.query); 
   
   const loadChemicals = async (query?: string) => {
+    console.log("PAGE: loadChemicals called with query:", query);
     setLoading(true);
     try {
+      // Здесь getChemicals должна уметь принимать строку. 
+      // Если она принимает объект, передайте { query }
       const elements = await getChemicals(query);
       setChemicals(elements);
     } catch (error) {
@@ -37,48 +41,46 @@ export const ChemicalPage: FC = () => {
     }
   };
 
-  // --- ОБНОВЛЕННАЯ ФУНКЦИЯ ---
   const loadCartCount = async () => {
     try {
       const response = await api.mixing.cartIconList();
-      
-      // Принудительное приведение типа к any для доступа к любым полям
       const anyRes = response as any;
       let count = 0;
 
-      // Логика поиска поля ItemsCount / items_count
-      // 1. Проверяем внутри data (если это axios response)
       if (anyRes.data) {
          count = anyRes.data.ItemsCount ?? anyRes.data.items_count ?? 0;
-      } 
-      // 2. Проверяем в корне объекта (если клиент вернул тело сразу)
-      else if (anyRes.ItemsCount !== undefined || anyRes.items_count !== undefined) {
+      } else if (anyRes.ItemsCount !== undefined || anyRes.items_count !== undefined) {
          count = anyRes.ItemsCount ?? anyRes.items_count ?? 0;
       }
-      
-      console.log('Cart count debug:', count, 'Full response:', anyRes);
+      // console.log('Cart count debug:', count);
       setCartCount(count);
-
-      // В функции loadCartCount добавьте логирование:
-
     } catch (error) {
-      console.error('Error loading cart count:', error);
+      // console.error('Error loading cart count:', error);
       setCartCount(0);
     }
   };
 
-  useEffect(() => {
-    loadChemicals(searchQuery || undefined);
-    loadCartCount();
-  }, []);
+  // --- ЛОГИКА ЗАГРУЗКИ ---
 
-  // Обновляем при смене пользователя
+  // 1. Автоматическая загрузка ТОЛЬКО если запрос пустой (например, при первом входе или после сброса)
+  useEffect(() => {
+    if (!searchQuery) {
+        console.log("PAGE: Query is empty (initial or reset) -> Auto loading full list");
+        loadChemicals(undefined);
+    } else {
+        console.log("PAGE: Query is present (" + searchQuery + ") -> Waiting for manual search");
+    }
+  }, [searchQuery]); 
+
+  // 2. Обновляем корзину при смене юзера
   useEffect(() => {
     loadCartCount();
   }, [user]);
 
+  // 3. Ручной поиск по кнопке
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("PAGE: Manual search triggered");
     loadChemicals(searchQuery);
   };
 
@@ -90,7 +92,6 @@ export const ChemicalPage: FC = () => {
 
     try {
       await dispatch(addToDraft({ element_id: id, volume: 100 })).unwrap();
-      // Обновляем иконку сразу после добавления
       await loadCartCount();
     } catch (error) {
       console.error('Ошибка добавления:', error);
@@ -113,11 +114,7 @@ export const ChemicalPage: FC = () => {
       <div className="search-section">
         <Link to={ROUTES.MIXING} className="cart-link">
           <img src={`${STATIC_BASE}/breaker.svg`} alt="cart" />
-          
-          {/* Условие отображения: count > 0 */}
-          {cartCount > 0 && (
-            <span className="cart-count">{cartCount}</span>
-          )}
+          {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
         </Link>
         
         <form onSubmit={handleSearch}>
