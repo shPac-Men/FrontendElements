@@ -43,6 +43,11 @@ export interface HandlerCreateMixingRequest {
   title: string;
 }
 
+export interface HandlerDeleteFromMixedRequest {
+  element_id: number;
+  hard_delete?: boolean;
+}
+
 export interface HandlerElementResponse {
   concentration?: number;
   description?: string;
@@ -233,11 +238,6 @@ export interface ServiceCreateElementResponse {
 export interface ServiceDeleteElementResponse {
   id?: number;
   message?: string;
-}
-
-export interface ServiceDeleteFromMixedRequest {
-  elementID?: number;
-  hardDelete?: boolean;
 }
 
 export interface ServiceDeleteMixedRequest {
@@ -595,29 +595,6 @@ export class Api<
       }),
 
     /**
-     * @description Remove a chemical element from mixing order (Admin only)
-     *
-     * @tags admin
-     * @name MixedItemsDelete
-     * @summary Delete element from order
-     * @request DELETE:/admin/mixed/{id}/items
-     * @secure
-     */
-    mixedItemsDelete: (
-      id: number,
-      request: ServiceDeleteFromMixedRequest,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, HandlerErrorResponse>({
-        path: `/admin/mixed/${id}/items`,
-        method: "DELETE",
-        body: request,
-        secure: true,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
      * @description Get list of all users in system (Admin only)
      *
      * @tags admin
@@ -961,6 +938,29 @@ export class Api<
         secure: true,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Remove a chemical element from a mixing order. Users can only delete from their own drafts, Admins can delete from any.
+     *
+     * @tags mixed
+     * @name ItemsDelete
+     * @summary Delete element from order
+     * @request DELETE:/mixed/{id}/items
+     * @secure
+     */
+    itemsDelete: (
+      id: number,
+      request: HandlerDeleteFromMixedRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, HandlerErrorResponse>({
+        path: `/mixed/${id}/items`,
+        method: "DELETE",
+        body: request,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
   };

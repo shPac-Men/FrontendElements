@@ -94,20 +94,20 @@ export const MixingPage: FC = () => {
   // Функция handleCreateOrder удалена полностью
 
   const handleRemoveItem = async (elementId: number) => {
-    // TODO: Здесь должна быть разная логика для корзины и для черновика.
-    // Пока что работает только для корзины.
+    if (!confirm('Удалить этот элемент?')) return;
+
     if (draftId) {
-        alert("Удаление из существующего черновика пока не поддерживается.");
-        return;
+      // пример: await api.mixed.deleteItem(draftId, elementId)
+      await api.mixed.itemsDelete(draftId, {
+                element_id: elementId,
+            });// <- заменить на реальный метод
+      await loadDraftOrCart();
+      return;
     }
 
-    if (!confirm('Удалить этот элемент?')) return;
     const success = await removeFromMixing(elementId);
-    if (success) {
-      loadDraftOrCart(); // Обновляем список
-    } else {
-      alert('Ошибка при удалении');
-    }
+    if (success) await loadDraftOrCart();
+    else alert('Ошибка при удалении');
   };
 
   // Заглушки для логики расчета (оставлены как в оригинале)
