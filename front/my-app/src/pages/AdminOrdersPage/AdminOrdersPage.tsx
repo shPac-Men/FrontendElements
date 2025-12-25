@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchAllOrders, updateOrderStatus } from '../../store/ordersSlice';
 import { ROUTES } from '../../Routes';
 import { STATIC_BASE } from '../../config/config';
+import { api } from '../../api';
 import './AdminOrdersPage.css';
 
 export const AdminOrdersPage = () => {
@@ -12,9 +13,15 @@ export const AdminOrdersPage = () => {
   const { list, loading } = useAppSelector((state) => state.orders);
   const { user } = useAppSelector((state) => state.auth);
   
+  // Функция для получения сегодняшней даты в формате YYYY-MM-DD
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+  
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [dateFrom, setDateFrom] = useState<string>('');
-  const [dateTo, setDateTo] = useState<string>('');
+  const [dateTo, setDateTo] = useState<string>(getTodayDate());
   const [creatorFilter, setCreatorFilter] = useState<string>('');
   
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -82,9 +89,38 @@ export const AdminOrdersPage = () => {
   };
 
   const handleStatusChange = async (orderId: number, newStatus: string) => {
-    await dispatch(updateOrderStatus({ orderId, status: newStatus }));
-    // После обновления статуса перезагружаем список
-    loadOrders();
+    // Если статус "completed", вызываем CompleteMixed (который запускает Python-сервис)
+    if (newStatus === 'completed') {
+      try {
+        const response = await api.admin.mixedCompleteUpdate(orderId, {});
+        console.log('Заявка завершена:', response);
+        alert('Заявка завершена. pH будет рассчитан автоматически.');
+        // После успешного завершения перезагружаем список
+        loadOrders();
+      } catch (error: any) {
+        console.error('Ошибка завершения заявки:', error);
+        const errorMessage = error?.response?.data?.error || 
+                           error?.response?.data?.message || 
+                           error?.message || 
+                           'Ошибка при завершении заявки';
+        console.error('Детали ошибки:', {
+          status: error?.response?.status,
+          data: error?.response?.data,
+          message: errorMessage
+        });
+        alert(`Ошибка при завершении заявки: ${errorMessage}`);
+        return;
+      }
+    } else {
+      // Для других статусов просто обновляем статус
+      try {
+        await dispatch(updateOrderStatus({ orderId, status: newStatus }));
+        loadOrders();
+      } catch (error: any) {
+        console.error('Ошибка обновления статуса:', error);
+        alert(error?.message || 'Ошибка при обновлении статуса');
+      }
+    }
   };
 
   // Фильтры применяются автоматически через useEffect

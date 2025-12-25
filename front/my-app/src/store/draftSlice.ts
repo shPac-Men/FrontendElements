@@ -4,6 +4,8 @@ import { logout } from './authSlice';
 
 // Тип элемента в корзине (подсмотри в Swagger HandlerCartIconResponse или MixingList)
 // Пока сделаем any, чтобы заработало
+
+
 export const fetchDraft = createAsyncThunk('draft/fetch', async () => {
   const res = await api.mixing.mixingList();
   return res.data; 
@@ -11,7 +13,7 @@ export const fetchDraft = createAsyncThunk('draft/fetch', async () => {
 
 export const addToDraft = createAsyncThunk('draft/add', async (params: { element_id: number, volume: number }) => {
   await api.mixing.itemsCreate(params);
-  // после добавления можно перезапросить список
+  
 });
 
 export const removeFromDraft = createAsyncThunk('draft/remove', async (element_id: number) => {

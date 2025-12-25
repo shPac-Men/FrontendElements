@@ -5,6 +5,7 @@ export const ROUTES = {
   CHEMICALS: '/chemicals',
   ELEMENT_DETAIL: '/chemicals/:id',
   MIXING: '/mixing',
+  MIXING_WITH_ID: '/mixing/:id',
   
   // ЛР7
   LOGIN: '/login',

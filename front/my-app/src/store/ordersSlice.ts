@@ -51,7 +51,7 @@ export const fetchOrders = createAsyncThunk(
 // Получение списка всех заявок (для модератора/админа)
 export const fetchAllOrders = createAsyncThunk(
   'orders/fetchAllOrders',
-  async (filters?: { status?: string; date_from?: string; date_to?: string }, { rejectWithValue }) => {
+  async (filters: { status?: string; date_from?: string; date_to?: string } | undefined, { rejectWithValue }) => {
     try {
       const query: any = {};
       if (filters?.status) query.status = filters.status;

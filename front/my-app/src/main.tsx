@@ -49,6 +49,7 @@ const router = createBrowserRouter(
         { path: ROUTES.HOME, element: <HomePage /> }, // Лучше заменить на { index: true, element: <HomePage /> }
         { path: ROUTES.CHEMICALS, element: <ChemicalPage /> },
         { path: ROUTES.ELEMENT_DETAIL, element: <ChemicalDetailPage /> },
+        { path: ROUTES.MIXING_WITH_ID, element: <MixingPage /> },
         { path: ROUTES.MIXING, element: <MixingPage /> },
 
         // --- ДОБАВЛЯЕМ НОВЫЕ РОУТЫ СЮДА ---
